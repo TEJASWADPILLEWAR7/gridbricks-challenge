@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+/* You can add custom theme variables here for v4 if needed later, but this is all we need to start */
+@theme {
+  --color-background: #f9fafb;
+}
+
+body {
+  margin: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  background-color: var(--color-background);
+}

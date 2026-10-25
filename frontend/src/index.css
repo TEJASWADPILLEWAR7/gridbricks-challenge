@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* You can add custom theme variables here for v4 if needed later, but this is all we need to start */
 @theme {
   --color-background: #f9fafb;
 }

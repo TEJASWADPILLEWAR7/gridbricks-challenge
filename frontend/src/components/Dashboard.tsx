@@ -6,10 +6,20 @@ import { Activity } from "lucide-react";
 
 interface DashboardProps {
   data: AnalysisResponse;
+  startDate: string;
+  endDate: string;
 }
 
-export function Dashboard({ data }: DashboardProps) {
+export function Dashboard({ data, startDate, endDate }: DashboardProps) {
   const { metrics, intervals } = data;
+
+  const formatPeriodDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-GB", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-12">
@@ -29,7 +39,10 @@ export function Dashboard({ data }: DashboardProps) {
         </div>
         <div className="text-left md:text-right text-sm text-gray-600 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
           <p className="font-medium">
-            Period: <span className="text-gray-900">Jan 1 - Jan 7, 2026</span>
+            Period:{" "}
+            <span className="text-gray-900">
+              {formatPeriodDate(startDate)} - {formatPeriodDate(endDate)}
+            </span>
           </p>
           <p>
             Valid Delivery Intervals:{" "}

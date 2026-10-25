@@ -8,12 +8,14 @@ function App() {
   const [data, setData] = useState<AnalysisResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [startDate, setStartDate] = useState<string>("2026-01-01");
+  const [endDate, setEndDate] = useState<string>("2026-01-31");
 
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
-        const result = await fetchAnalysisData();
+        const result = await fetchAnalysisData(startDate, endDate);
         setData(result);
         setError(null);
       } catch (err) {
@@ -26,19 +28,50 @@ function App() {
     }
 
     loadData();
-  }, []);
+  }, [startDate, endDate]);
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 p-4 md:p-8 font-sans">
+      <div className="max-w-7xl mx-auto mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-wrap gap-6 items-center">
+        <div className="flex items-center gap-3">
+          <label
+            htmlFor="startDate"
+            className="text-sm font-bold text-gray-700"
+          >
+            Start Date:
+          </label>
+          <input
+            type="date"
+            id="startDate"
+            min="2026-01-01"
+            max="2026-01-31"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="border border-gray-300 rounded-md px-3 py-1.5 text-sm"
+          />
+        </div>
+        <div className="flex items-center gap-3">
+          <label htmlFor="endDate" className="text-sm font-bold text-gray-700">
+            End Date:
+          </label>
+          <input
+            type="date"
+            id="endDate"
+            min="2026-01-01"
+            max="2026-02-28"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="border border-gray-300 rounded-md px-3 py-1.5 text-sm"
+          />
+        </div>
+      </div>
+
       {loading && (
-        <div className="min-h-[80vh] flex flex-col items-center justify-center text-gray-500">
+        <div className="min-h-[70vh] flex flex-col items-center justify-center text-gray-500">
           <Loader2 className="w-10 h-10 animate-spin mb-4 text-blue-600" />
           <h2 className="text-lg font-medium text-gray-700">
             Loading analytics engine...
           </h2>
-          <p className="text-sm mt-2">
-            Retrieving and aligning live Day-Ahead Elexon datasets.
-          </p>
         </div>
       )}
 
@@ -54,7 +87,9 @@ function App() {
         </div>
       )}
 
-      {data && !loading && !error && <Dashboard data={data} />}
+      {data && !loading && !error && (
+        <Dashboard data={data} startDate={startDate} endDate={endDate} />
+      )}
     </div>
   );
 }

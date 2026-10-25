@@ -18,7 +18,7 @@ app = FastAPI(
 # Configure CORS for the frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://frontend-two-mocha-44.vercel.app/"]
+    allow_origins=["https://frontend-two-mocha-44.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

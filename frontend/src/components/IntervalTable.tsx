@@ -98,10 +98,9 @@ export function IntervalTable({ intervals }: IntervalTableProps) {
                     <td className="px-6 py-3.5 whitespace-nowrap text-gray-500 dark:text-gray-400 font-medium flex items-center gap-2">
                       {formatDateTime(interval.publishTime)}
                       {isMissing && (
-                        <AlertCircle
-                          className="w-4 h-4 text-red-400 dark:text-red-500"
-                          title="Missing data"
-                        />
+                        <span title="Missing data" className="inline-flex">
+                          <AlertCircle className="w-4 h-4 text-red-400 dark:text-red-500" />
+                        </span>
                       )}
                     </td>
                   </tr>

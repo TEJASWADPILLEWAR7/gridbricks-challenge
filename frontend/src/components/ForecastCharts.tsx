@@ -16,10 +16,9 @@ import type { IntervalData } from "../types";
 
 interface ForecastChartsProps {
   intervals: IntervalData[];
-  isDark: boolean;
 }
 
-export function ForecastCharts({ intervals, isDark }: ForecastChartsProps) {
+export function ForecastCharts({ intervals }: ForecastChartsProps) {
   const chartData = useMemo(() => {
     return intervals.map((interval) => {
       const dateObj = new Date(interval.startTime);
@@ -35,86 +34,68 @@ export function ForecastCharts({ intervals, isDark }: ForecastChartsProps) {
     });
   }, [intervals]);
 
-  const axisColor = isDark ? "#6b7280" : "#9ca3af";
-  const gridColor = isDark ? "#1f2937" : "#f3f4f6";
-  const tooltipBg = isDark ? "#111827" : "#ffffff";
-  const tooltipBorder = isDark ? "#374151" : "#e5e7eb";
-  const textColor = isDark ? "#f3f4f6" : "#111827";
-
   return (
     <div className="space-y-8">
-      <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 transition-colors duration-500">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
-          Generation: Actual vs. Forecast
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <h3 className="text-lg font-bold text-gray-800 mb-4">
+          Wind Generation: Actual vs. Forecast
         </h3>
-        <div className="h-[22rem] w-full">
+        <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={chartData}
-              margin={{ top: 10, right: 30, left: 20, bottom: 5 }}
+              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid
                 strokeDasharray="3 3"
                 vertical={false}
-                stroke={gridColor}
+                stroke="#e5e7eb"
               />
               <XAxis
                 dataKey="displayTime"
-                tick={{ fontSize: 12, fill: axisColor }}
-                tickMargin={12}
+                tick={{ fontSize: 12, fill: "#6b7280" }}
                 minTickGap={50}
-                axisLine={false}
-                tickLine={false}
               />
               <YAxis
-                tick={{ fontSize: 12, fill: axisColor }}
-                tickMargin={12}
-                axisLine={false}
-                tickLine={false}
+                tick={{ fontSize: 12, fill: "#6b7280" }}
                 label={{
-                  value: "MW",
+                  value: "Generation (MW)",
                   angle: -90,
                   position: "insideLeft",
-                  fill: axisColor,
-                  fontSize: 12,
+                  style: {
+                    textAnchor: "middle",
+                    fill: "#4b5563",
+                    fontSize: 14,
+                  },
                 }}
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: tooltipBg,
-                  borderRadius: "12px",
-                  borderColor: tooltipBorder,
-                  color: textColor,
-                  boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
-                }}
-                itemStyle={{ color: textColor, fontWeight: 500 }}
-              />
-              <Legend
-                wrapperStyle={{
-                  paddingTop: "24px",
-                  fontSize: "13px",
-                  color: axisColor,
+                  borderRadius: "8px",
+                  border: "none",
+                  boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                 }}
               />
+              <Legend wrapperStyle={{ paddingTop: "20px" }} />
               <Line
                 type="monotone"
                 name="Actual Generation"
                 dataKey="actual_generation"
                 stroke="#10b981"
-                strokeWidth={3}
+                strokeWidth={2}
                 dot={false}
-                activeDot={{ r: 6, strokeWidth: 0 }}
+                activeDot={{ r: 6 }}
                 connectNulls={false}
               />
               <Line
                 type="monotone"
-                name="Forecast Generation (12:00 Cutoff)"
+                name="Forecast Generation (12:00 Day-Ahead)"
                 dataKey="forecast_generation"
                 stroke="#3b82f6"
-                strokeWidth={3}
-                strokeDasharray="6 6"
+                strokeWidth={2}
+                strokeDasharray="5 5"
                 dot={false}
-                activeDot={{ r: 6, strokeWidth: 0 }}
+                activeDot={{ r: 6 }}
                 connectNulls={false}
               />
             </LineChart>
@@ -122,67 +103,53 @@ export function ForecastCharts({ intervals, isDark }: ForecastChartsProps) {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 transition-colors duration-500">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-          Error Magnitude & Direction
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <h3 className="text-lg font-bold text-gray-800 mb-1">
+          Forecast Error Magnitude & Direction
         </h3>
-        <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-6">
-          Positive implies overforecasting. Negative implies underforecasting.
+        <p className="text-sm text-gray-500 mb-4">
+          Positive values indicate overforecasting. Negative values indicate
+          underforecasting.
         </p>
-        <div className="h-[18rem] w-full">
+        <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
-              margin={{ top: 10, right: 30, left: 20, bottom: 5 }}
+              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid
                 strokeDasharray="3 3"
                 vertical={false}
-                stroke={gridColor}
+                stroke="#e5e7eb"
               />
               <XAxis
                 dataKey="displayTime"
-                tick={{ fontSize: 12, fill: axisColor }}
-                tickMargin={12}
+                tick={{ fontSize: 12, fill: "#6b7280" }}
                 minTickGap={50}
-                axisLine={false}
-                tickLine={false}
               />
               <YAxis
-                tick={{ fontSize: 12, fill: axisColor }}
-                tickMargin={12}
-                axisLine={false}
-                tickLine={false}
+                tick={{ fontSize: 12, fill: "#6b7280" }}
                 label={{
-                  value: "MW Error",
+                  value: "Error (MW)",
                   angle: -90,
                   position: "insideLeft",
-                  fill: axisColor,
-                  fontSize: 12,
+                  style: {
+                    textAnchor: "middle",
+                    fill: "#4b5563",
+                    fontSize: 14,
+                  },
                 }}
               />
               <Tooltip
-                cursor={{ fill: isDark ? "#1f2937" : "#f9fafb" }}
+                cursor={{ fill: "#f3f4f6" }}
                 contentStyle={{
-                  backgroundColor: tooltipBg,
-                  borderRadius: "12px",
-                  borderColor: tooltipBorder,
-                  color: textColor,
-                  boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
+                  borderRadius: "8px",
+                  border: "none",
+                  boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                 }}
               />
-              <ReferenceLine
-                y={0}
-                stroke={axisColor}
-                strokeWidth={1.5}
-                opacity={0.5}
-              />
-              <Bar
-                name="Forecast Error"
-                dataKey="error"
-                fill="#f43f5e"
-                radius={[4, 4, 0, 0]}
-              />
+              <ReferenceLine y={0} stroke="#9ca3af" strokeWidth={2} />
+              <Bar name="Forecast Error" dataKey="error" fill="#f43f5e" />
             </BarChart>
           </ResponsiveContainer>
         </div>

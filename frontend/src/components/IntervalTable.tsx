@@ -29,86 +29,103 @@ export function IntervalTable({ intervals }: IntervalTableProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 mt-8 transition-colors duration-500">
-      <div className="mb-6">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-          Interval Investigation
-        </h3>
-        <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">
-          Detailed breakdown of delivery periods, settled actuals, and retained
-          forecasts.
-        </p>
+    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mt-8">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="text-lg font-bold text-gray-800">
+            Interval-Level Investigation
+          </h3>
+          <p className="text-sm text-gray-500">
+            Detailed breakdown of actuals, selected forecasts, and errors.
+          </p>
+        </div>
       </div>
 
-      <div className="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden transition-colors duration-500">
-        <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
-          <table className="min-w-full text-sm text-left">
-            <thead className="bg-gray-50 dark:bg-gray-950/50 text-gray-600 dark:text-gray-400 sticky top-0 z-10 backdrop-blur-md transition-colors duration-500">
-              <tr>
-                <th className="px-6 py-4 font-semibold whitespace-nowrap">
-                  Delivery Start Time
-                </th>
-                <th className="px-6 py-4 font-semibold text-right whitespace-nowrap">
-                  Actual (MW)
-                </th>
-                <th className="px-6 py-4 font-semibold text-right whitespace-nowrap">
-                  Forecast (MW)
-                </th>
-                <th className="px-6 py-4 font-semibold text-right whitespace-nowrap">
-                  Error (MW)
-                </th>
-                <th className="px-6 py-4 font-semibold whitespace-nowrap">
-                  Publish Time
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900 transition-colors duration-500">
-              {intervals.map((interval, idx) => {
-                const isMissing =
-                  interval.actual_generation === null ||
-                  interval.forecast_generation === null;
+      <div className="overflow-x-auto border border-gray-200 rounded-lg max-h-[500px] overflow-y-auto">
+        <table className="min-w-full divide-y divide-gray-200 text-sm">
+          <thead className="bg-gray-50 sticky top-0 shadow-sm z-10">
+            <tr>
+              <th
+                scope="col"
+                className="px-4 py-3 text-left font-semibold text-gray-700"
+              >
+                Delivery Start Time
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-3 text-right font-semibold text-gray-700"
+              >
+                Actual (MW)
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-3 text-right font-semibold text-gray-700"
+              >
+                Forecast (MW)
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-3 text-right font-semibold text-gray-700"
+              >
+                Error (MW)
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-3 text-left font-semibold text-gray-700"
+              >
+                Forecast Publish Time
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {intervals.map((interval, idx) => {
+              const isMissingData =
+                interval.actual_generation === null ||
+                interval.forecast_generation === null;
 
-                return (
-                  <tr
-                    key={interval.startTime || idx}
-                    className={`hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-200 ${isMissing ? "bg-red-50/40 dark:bg-red-900/10" : ""}`}
-                  >
-                    <td className="px-6 py-3.5 whitespace-nowrap text-gray-900 dark:text-gray-200 font-medium">
-                      {formatDateTime(interval.startTime)}
-                    </td>
-                    <td className="px-6 py-3.5 whitespace-nowrap text-right text-gray-600 dark:text-gray-400 font-medium">
-                      {formatNumber(interval.actual_generation)}
-                    </td>
-                    <td className="px-6 py-3.5 whitespace-nowrap text-right text-gray-600 dark:text-gray-400 font-medium">
-                      {formatNumber(interval.forecast_generation)}
-                    </td>
-                    <td className="px-6 py-3.5 whitespace-nowrap text-right">
+              return (
+                <tr
+                  key={interval.startTime || idx}
+                  className={`hover:bg-gray-50 ${isMissingData ? "bg-red-50/30" : ""}`}
+                >
+                  <td className="px-4 py-3 whitespace-nowrap text-gray-900 font-medium">
+                    {formatDateTime(interval.startTime)}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-right text-gray-600">
+                    {formatNumber(interval.actual_generation)}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-right text-gray-600">
+                    {formatNumber(interval.forecast_generation)}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-right">
+                    <span
+                      className={
+                        interval.error && interval.error > 0
+                          ? "text-red-600 font-medium"
+                          : interval.error && interval.error < 0
+                            ? "text-blue-600 font-medium"
+                            : "text-gray-600"
+                      }
+                    >
+                      {formatNumber(interval.error)}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-gray-500 flex items-center gap-2">
+                    {formatDateTime(interval.publishTime)}
+                    {isMissingData && (
                       <span
-                        className={`font-bold ${
-                          interval.error && interval.error > 0
-                            ? "text-red-500 dark:text-red-400"
-                            : interval.error && interval.error < 0
-                              ? "text-blue-500 dark:text-blue-400"
-                              : "text-gray-500 dark:text-gray-500"
-                        }`}
+                        title="Missing data for this interval"
+                        className="text-red-400"
                       >
-                        {formatNumber(interval.error)}
+                        <AlertCircle className="w-4 h-4" />
                       </span>
-                    </td>
-                    <td className="px-6 py-3.5 whitespace-nowrap text-gray-500 dark:text-gray-400 font-medium flex items-center gap-2">
-                      {formatDateTime(interval.publishTime)}
-                      {isMissing && (
-                        <span title="Missing data" className="inline-flex">
-                          <AlertCircle className="w-4 h-4 text-red-400 dark:text-red-500" />
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   );
